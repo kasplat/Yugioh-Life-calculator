@@ -10,7 +10,7 @@ const admin = require('firebase-admin');
 var life_dict = {};
  
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
-admin.initializeApp(functions.config().firebase);
+// admin.initializeApp(functions.config().firebase);
 // const db = admin.firestore();
  
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
@@ -37,6 +37,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
      agent.add(new Suggestion(`Roll a die`));
      agent.add(new Suggestion('Deal 1000 damage to player 2'));
      agent.add(new Suggestion('Player 1 gains 1000 life points'));
+     agent.add(new Suggestion('yatta woty wooty'))
    }
    
    function dealDamageToPlayer(agent){
