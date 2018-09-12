@@ -10,8 +10,10 @@ const admin = require('firebase-admin');
 var life_dict = {};
  
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
-// admin.initializeApp(functions.config().firebase);
-// const db = admin.firestore();
+admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
+const settings = {/* your settings... */ timestampsInSnapshots: true}; // set time for database to remove error in logging
+db.settings(settings);
  
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agent = new WebhookClient({ request, response });
@@ -37,7 +39,6 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
      agent.add(new Suggestion(`Roll a die`));
      agent.add(new Suggestion('Deal 1000 damage to player 2'));
      agent.add(new Suggestion('Player 1 gains 1000 life points'));
-     agent.add(new Suggestion('yatta woty wooty'))
    }
    
    function dealDamageToPlayer(agent){
@@ -86,23 +87,24 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
    }
    
    function rollDice(agent){
-        var result = Math.random();
-        var out = rollDie(agent.parameters.number);
-        agent.add('Rolled a ' + out);
-        // const databaseEntry = agent.parameters.number;
+        // var result = Math.random();
+        // var out = rollDie(agent.parameters.number);
+        // agent.add('Rolled a ' + out);
+        console.log(agent);
+        const databaseEntry = agent.parameters.number ? agent.parameters.number : 20;
 
-        // // Get the database collection 'dialogflow' and document 'agent' and store
-        // // the document  {entry: "<value of database entry>"} in the 'agent' document
-        // const dialogflowAgentRef = db.collection('users').doc(agent.session); //key is agent.session
-        // return db.runTransaction(t => {
-        //   t.set(dialogflowAgentRef, {entry: databaseEntry});
-        //   return Promise.resolve('Write complete');
-        // }).then(doc => {
-        //   agent.add(`Wrote "${databaseEntry}" to the Firestore database.`);
-        // }).catch(err => {
-        //   console.log(`Error writing to Firestore: ${err}`);
-        //   agent.add(`Failed to write "${databaseEntry}" to the Firestore database.`);
-        // });
+        // Get the database collection 'dialogflow' and document 'agent' and store
+        // the document  {entry: "<value of database entry>"} in the 'agent' document
+        const dialogflowAgentRef = db.collection('users').doc('maindoc'); //key is agent.session
+        return db.runTransaction(t => {
+          t.set(dialogflowAgentRef, {entry: databaseEntry});
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add(`Wrote "${databaseEntry}" to the Firestore database.`);
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to write "${databaseEntry}" to the Firestore database.`);
+        });
    }
    
    function rollDie(sides){
