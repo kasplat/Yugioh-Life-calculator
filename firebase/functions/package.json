@@ -1,24 +1,25 @@
 {
-  "name": "dialogflowFirebaseFulfillment",
+  "name": "ygo_calc",
   "description": "This is the default fulfillment for a Dialogflow agents using Cloud Functions for Firebase",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
-  "author": "Google Inc.",
+  "author": "Kesavan Kushalnagar",
   "engines": {
     "node": "6"
   },
   "scripts": {
-    "start": "firebase serve --only functions:dialogflowFirebaseFulfillment",
-    "deploy": "firebase deploy --only functions:dialogflowFirebaseFulfillment",
+    "start": "firebase serve --only functions:ygo_calc",
+    "deploy": "firebase deploy --only functions:ygo_calc",
     "lint": "eslint"
   },
   "dependencies": {
-    "actions-on-google": "2.0.0-alpha.4",
-    "dialogflow": "^0.1.0",
+    "actions-on-google": "^2.0.0-alpha.4",
+    "dialogflow": "^4.0.3",
     "dialogflow-fulfillment": "0.3.0-beta.3",
-    "firebase-admin": "^4.2.1",
-    "firebase-functions": "^2.0.5"
+    "firebase-admin": "^6.0.0",
+    "firebase-functions": "^2.0.5",
+    "firebase-tools": "^6.1.2"
   },
   "devDependencies": {
     "eslint": "^5.5.0"
