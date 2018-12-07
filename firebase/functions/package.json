@@ -14,14 +14,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "actions-on-google": "^2.0.0-alpha.4",
+    "actions-on-google": "^2.5.0",
     "dialogflow": "^4.0.3",
-    "dialogflow-fulfillment": "0.3.0-beta.3",
-    "firebase-admin": "^6.0.0",
-    "firebase-functions": "^2.0.5",
+    "dialogflow-fulfillment": "^0.6.1",
+    "firebase-admin": "^6.3.0",
+    "firebase-functions": "^2.1.0",
     "firebase-tools": "^6.1.2"
   },
   "devDependencies": {
-    "eslint": "^5.5.0"
+    "eslint": "^5.9.0"
   }
 }

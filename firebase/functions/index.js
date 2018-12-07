@@ -24,14 +24,10 @@ exports.ygo_calc = functions.https.onRequest((request, response) => {
    * deal a specified amount of damage to a specified player.
    */
   function dealDamageToPlayer(agent){
-    data = agent.getContext('life_context').data;
-    if (!data){
-      init_game(agent);
-    }
-    var player = agent.parameters.number;
-    var damage = agent.parameters.number1;
     var data = getData(agent);
-    var player_won = false;
+    let player = agent.parameters.number;
+    let damage = agent.parameters.number1;
+    let player_won = false;
     if (player == 1){ 
         data.p1.life -= damage;
         if (data.p1.life < 0){ data.p1.life = 0;}
@@ -52,15 +48,15 @@ exports.ygo_calc = functions.https.onRequest((request, response) => {
     let p2 = {};
     p1.life = 8000;
     p2.life = 8000;
-    let context = {'name': 'life_context', 'lifespan': 10000, 'data': {'p1': p1, 'p2': p2}};
-    agent.setContext(context);
+    let context = {'name': 'life_context', 'lifespan': 1000000, 'parameters': {'p1': p1, 'p2': p2}};
+    agent.context.set(context);
   }
   
   /**
    * creates a card that has the life text on it. Assumes that the agent's context has the life in it
    */
   function makeLifeText(agent){
-      data = getData(agent);
+      var data = getData(agent);
       return new Card({
         title: `Current Life Points`,
         imageUrl: 'https://developers.google.com/actions/images/badges/XPM_BADGING_GoogleAssistant_VER.png',
@@ -70,7 +66,7 @@ exports.ygo_calc = functions.https.onRequest((request, response) => {
   
   function winningText(agent){
       var data = getData(agent);
-      var winner = data.p1.life === 0 ? 2 : 1;  // if p1 life is at 0, player 2 wins
+      let winner = data.p1.life === 0 ? 2 : 1;  // if p1 life is at 0, player 2 wins
       agent.add(new Suggestion('Start a new game.'));
       return new Card({
           title: 'Good Game!',
@@ -79,11 +75,14 @@ exports.ygo_calc = functions.https.onRequest((request, response) => {
   }
 
   function getData(agent){
-    return agent.getContext('life_context').data;
+    if (!agent.context.get('life_context')){
+      init_game(agent);
+    }
+    return agent.context.get('life_context').parameters;
   }
   
   function rollDice(agent){
-      var out = rollDie(agent.parameters.number);
+      let out = rollDie(agent.parameters.number);
       agent.add('Rolled a ' + out);
   }
   
@@ -94,17 +93,20 @@ exports.ygo_calc = functions.https.onRequest((request, response) => {
   
   function playerGainsLife(agent){
       var data = getData(agent);
-      var player = agent.parameters.number;
-      var gain = agent.parameters.number1;
-      player == 1 ? data.p1.life += gain : data.p2.life += gain;
+      let player = agent.parameters.number;
+      let gain = agent.parameters.number1;
+      if (player == 1){ 
+        data.p1.life += gain;
+      }
+      else {
+        data.p2.life += gain;
+      }
       agent.add(makeLifeText(agent));
       agent.add('Player '  + player + ' gained ' + gain + " points.");
   }
       
   // Run the proper function handler based on the matched Dialogflow intent name
   let intentMap = new Map();
-  intentMap.set('Default Welcome Intent', welcome);
-  intentMap.set('Default Fallback Intent', fallback);
   intentMap.set('Play Game', startGame);
   intentMap.set('Deal Damage to a Player', dealDamageToPlayer);
   intentMap.set('Roll Dice', rollDice);
