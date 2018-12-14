@@ -76,7 +76,7 @@ exports.ygo_calc = functions.https.onRequest((request, response) => {
     var data = getData(agent);
     return new Card({
       title: `Current Life Points`,
-      imageUrl: 'https://vignette.wikia.nocookie.net/yugioh/images/e/e5/Back-EN.png/revision/latest?cb=20100726082133',
+      imageUrl: 'https://i.paigeeworld.com/user-media/1489881600000/58c25eb3735b5ac20eb8835b_58ce20f8a34a80c40e77b6f1_320.jpg',
       text: `Player 1: ` + data.p1.life + " Player 2: " + data.p2.life,
     });
   }
